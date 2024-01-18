@@ -1,8 +1,12 @@
 package com.example.U5W2D4.blogs;
 
+import com.example.U5W2D4.authors.AuthorsResponseDTO;
+import com.example.U5W2D4.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -24,8 +28,15 @@ public class BlogsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Blog create(@RequestBody NewBlogDTO body) {
-        return blogsService.save(body);
+    public AuthorsResponseDTO create(@RequestBody @Validated NewBlogDTO body, BindingResult validation) {
+        if(validation.hasErrors()) {
+            System.out.println(validation.getAllErrors());
+            throw new BadRequestException("Ci sono errori nel payload");
+        } else {
+            Blog newBlog = blogsService.save(body);
+            return new AuthorsResponseDTO(newBlog.getId());
+
+        }
     }
 
     @GetMapping("/{uuid}")

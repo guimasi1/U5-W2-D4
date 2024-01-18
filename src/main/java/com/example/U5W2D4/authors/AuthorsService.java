@@ -1,5 +1,7 @@
 package com.example.U5W2D4.authors;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.U5W2D4.exceptions.BadRequestException;
 import com.example.U5W2D4.exceptions.NotFoundException;
 import lombok.Getter;
@@ -10,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Random;
 import java.util.UUID;
@@ -21,6 +25,9 @@ import java.util.UUID;
 public class AuthorsService {
     @Autowired
     AuthorsDAO authorsDAO;
+
+    @Autowired
+    Cloudinary cloudinary;
 
     public Page<Author> getAuthors(int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page,size, Sort.by(orderBy));
@@ -64,5 +71,12 @@ public class AuthorsService {
 
 
 
+    public String uploadPicture(MultipartFile file) throws IOException {
+
+        String url = (String) cloudinary.uploader()
+                .upload(file.getBytes(), ObjectUtils.emptyMap())
+                .get("url");
+        return url;
+    }
 
 }

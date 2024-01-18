@@ -46,7 +46,7 @@ public class BlogsService {
         blogsDAO.findByTitle(newBlogDTO.title()).ifPresent(author1 -> {
             throw new BadRequestException("Il titolo " + newBlogDTO.title() + " è già in uso");
         });
-        Author author = authorsService.findById(UUID.fromString(newBlogDTO.authorURL()));
+        Author author = authorsService.findById(newBlogDTO.authorURL());
         String category = newBlogDTO.category();
         String title = newBlogDTO.title();
         String coverUrl = newBlogDTO.coverUrl();
@@ -62,7 +62,7 @@ public class BlogsService {
 
     public Blog findByIdAndUpdate(UUID uuid, NewBlogDTO newBlogDTO) {
         Blog blog = this.findById(uuid);
-        Author author = authorsService.findById(UUID.fromString(newBlogDTO.authorURL()));
+        Author author = authorsService.findById(newBlogDTO.authorURL());
         blog.setAuthor(author);
         blog.setCategory(newBlogDTO.category());
         blog.setContent(newBlogDTO.category());
