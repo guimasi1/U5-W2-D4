@@ -4,6 +4,7 @@ import com.example.U5W2D4.exceptions.BadRequestException;
 import com.example.U5W2D4.exceptions.NotFoundException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,14 +27,20 @@ public class AuthorsService {
         return authorsDAO.findAll(pageable);
     }
 
-    public Author save(Author author) {
+    public Author save(NewAuthorDTO author) {
         Random rnd = new Random();
-        authorsDAO.findByEmail(author.getEmail()).ifPresent(author1 -> {
-            throw new BadRequestException("Email " + author.getEmail() + " già in uso");
+        authorsDAO.findByEmail(author.email()).ifPresent(author1 -> {
+            throw new BadRequestException("Email " + author.email() + " già in uso");
         });
-        author.setAvatarUrl("https://ui-avatars.com/api/?name=" + author.getName() + "+" + author.getSurname());
-        author.setBirthday(LocalDate.of(rnd.nextInt(1940,2010),rnd.nextInt(1,13), rnd.nextInt(1,29)));
-        return authorsDAO.save(author);
+        LocalDate date = LocalDate.of(rnd.nextInt(1940,2010),rnd.nextInt(1,13), rnd.nextInt(1,29));
+
+        Author newAuthor = new Author();
+        newAuthor.setSurname(author.surname());
+        newAuthor.setName(author.name());
+        newAuthor.setBirthday(date);
+        newAuthor.setEmail(author.email());
+        newAuthor.setAvatarUrl("https://ui-avatars.com/api/?name=" + author.name() + "+" + author.surname());
+        return authorsDAO.save(newAuthor);
     }
 
 

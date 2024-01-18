@@ -24,7 +24,7 @@ public class BlogsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Blog create(@RequestBody BlogsPayload body) {
+    public Blog create(@RequestBody NewBlogDTO body) {
         return blogsService.save(body);
     }
 
@@ -34,8 +34,8 @@ public class BlogsController {
     }
 
     @PutMapping("/{uuid}")
-    public Blog updateBlogById(@PathVariable UUID uuid, @RequestBody BlogsPayload blogsPayload) {
-        return blogsService.findByIdAndUpdate(uuid, blogsPayload);
+    public Blog updateBlogById(@PathVariable UUID uuid, @RequestBody NewBlogDTO newBlogDTO) {
+        return blogsService.findByIdAndUpdate(uuid, newBlogDTO);
     }
 
     @DeleteMapping("/{uuid}")

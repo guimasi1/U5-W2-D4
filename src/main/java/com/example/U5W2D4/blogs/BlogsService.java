@@ -42,16 +42,16 @@ public class BlogsService {
         Pageable pageable = PageRequest.of(page,size,Sort.by(orderBy));
         return blogsDAO.findByReadingTimeAndCategory(readingTime,category,pageable);
     }
-    public Blog save(BlogsPayload blogsPayload) {
-        blogsDAO.findByTitle(blogsPayload.getTitle()).ifPresent(author1 -> {
-            throw new BadRequestException("Il titolo " + blogsPayload.getTitle() + " è già in uso");
+    public Blog save(NewBlogDTO newBlogDTO) {
+        blogsDAO.findByTitle(newBlogDTO.title()).ifPresent(author1 -> {
+            throw new BadRequestException("Il titolo " + newBlogDTO.title() + " è già in uso");
         });
-        Author author = authorsService.findById(UUID.fromString(blogsPayload.getAuthorURL()));
-        String category = blogsPayload.getCategory();
-        String title = blogsPayload.getTitle();
-        String coverUrl = blogsPayload.getCoverUrl();
-        String content = blogsPayload.getContent();
-        int readingTime = blogsPayload.getReadingTime();
+        Author author = authorsService.findById(UUID.fromString(newBlogDTO.authorURL()));
+        String category = newBlogDTO.category();
+        String title = newBlogDTO.title();
+        String coverUrl = newBlogDTO.coverUrl();
+        String content = newBlogDTO.content();
+        int readingTime = newBlogDTO.readingTime();
         Blog blogToSave = new Blog(category,title,coverUrl,content,readingTime,author);
         return blogsDAO.save(blogToSave);
     }
@@ -60,15 +60,15 @@ public class BlogsService {
         return blogsDAO.findById(uuid).orElseThrow(() -> new NotFoundException(uuid));
     }
 
-    public Blog findByIdAndUpdate(UUID uuid, BlogsPayload blogsPayload) {
+    public Blog findByIdAndUpdate(UUID uuid, NewBlogDTO newBlogDTO) {
         Blog blog = this.findById(uuid);
-        Author author = authorsService.findById(UUID.fromString(blogsPayload.getAuthorURL()));
+        Author author = authorsService.findById(UUID.fromString(newBlogDTO.authorURL()));
         blog.setAuthor(author);
-        blog.setCategory(blogsPayload.getCategory());
-        blog.setContent(blogsPayload.getContent());
-        blog.setTitle(blogsPayload.getTitle());
-        blog.setCoverUrl(blogsPayload.getCoverUrl());
-        blog.setReadingTime(blogsPayload.getReadingTime());
+        blog.setCategory(newBlogDTO.category());
+        blog.setContent(newBlogDTO.category());
+        blog.setTitle(newBlogDTO.title());
+        blog.setCoverUrl(newBlogDTO.coverUrl());
+        blog.setReadingTime(newBlogDTO.readingTime());
         return blogsDAO.save(blog);
     }
 

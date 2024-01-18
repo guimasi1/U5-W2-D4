@@ -27,7 +27,7 @@ public class AuthorsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Author create(@RequestBody Author author) {
+    public Author create(@RequestBody NewAuthorDTO author) {
         return authorsService.save(author);
     }
 
